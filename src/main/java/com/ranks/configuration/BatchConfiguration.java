@@ -11,42 +11,36 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
-@Import(PropertyConfiguration.class)
+@Import({PropertyConfiguration.class, DBConfiguration.class})
 public class BatchConfiguration {
 
     @Bean
-    public ItemReader<Strongman> reader(@Value("${module.inputResource}") String inputResource) {
-        FlatFileItemReader<Strongman> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource(inputResource));
-        reader.setLineMapper(new DefaultLineMapper<Strongman>() {
-            {
-                setLineTokenizer(new DelimitedLineTokenizer() {
-                    {
-                        setNames(new String[]{"name"});
-                    }
-                });
-                setFieldSetMapper(new BeanWrapperFieldSetMapper<Strongman>() {
-                    {
-                        setTargetType(Strongman.class);
-                    }
-                });
-            }
+    @Autowired
+    public ItemReader<Strongman> reader(DataSource dataSource) {
+        JdbcCursorItemReader<Strongman> reader = new JdbcCursorItemReader<>();
+        reader.setDataSource(dataSource);
+        reader.setSql("SELECT userId, parameterValue FROM public.StrengthInfo;");
+        reader.setRowMapper((rs, rowNumb) -> {
+            Strongman strongman = new Strongman();
+            strongman.setName(rs.getString("userId"));
+            strongman.setBenchPress(rs.getInt("parameterValue"));
+            return strongman;
         });
+
         return reader;
     }
 
@@ -73,7 +67,7 @@ public class BatchConfiguration {
     public Step step(StepBuilderFactory stepBuilderFactory, ItemReader<Strongman> reader,
                      ItemWriter<Rank> writer, ItemProcessor<Strongman, Rank> processor) {
         return stepBuilderFactory.get("step")
-                .<Strongman, Rank>chunk(5)
+                .<Strongman, Rank>chunk(10)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

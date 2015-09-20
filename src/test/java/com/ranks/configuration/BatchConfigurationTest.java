@@ -19,7 +19,6 @@ public class BatchConfigurationTest extends AbstractTestNGSpringContextTests {
     @Test
     public void runStrongmenJob() throws Exception {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
-
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
     }
 

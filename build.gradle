@@ -10,15 +10,18 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.springframework', name:'spring-core', version:'4.2.1.RELEASE'
-    compile group:'org.springframework.boot', name:'spring-boot-starter', version:'1.2.6.RELEASE'
-    compile group:'org.springframework', name:'spring-webmvc', version:'4.2.1.RELEASE'
-    compile group:'org.springframework.batch', name:'spring-batch-core', version:'3.0.5.RELEASE'
-    compile group:'org.projectlombok', name:'lombok', version:'1.16.6'
-    testCompile group: 'org.testng', name:'testng', version:'6.1.1'
-    testCompile group:'org.springframework', name:'spring-test', version:'4.2.1.RELEASE'
-    testCompile group:'org.assertj', name:'assertj-core', version:'1.0.0'
-    testCompile group:'org.springframework.batch', name:'spring-batch-test', version:'3.0.5.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '4.2.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.2.6.RELEASE'
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '4.2.1.RELEASE'
+    compile group: 'org.springframework.batch', name: 'spring-batch-core', version: '3.0.5.RELEASE'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.6'
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '4.2.1.RELEASE'
+    compile group: 'postgresql', name:'postgresql', version:'9.1-901-1.jdbc4'
+    testCompile group: 'org.testng', name: 'testng', version: '6.1.1'
+    testCompile group: 'org.springframework', name: 'spring-test', version: '4.2.1.RELEASE'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '1.0.0'
+    testCompile group: 'org.springframework.batch', name: 'spring-batch-test', version: '3.0.5.RELEASE'
+    testCompile group: 'com.google.guava', name:'guava', version:'18.0'
 }
 
 test {

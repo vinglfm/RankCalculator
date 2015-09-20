@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class Rank {
     private final String name;
-    private final int rank;
+    private final String rank;
 }
