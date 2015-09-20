@@ -1,6 +1,7 @@
 package com.ranks.configuration;
 
 import com.ranks.calculation.StrongmanItemProcessor;
+import com.ranks.model.Rank;
 import com.ranks.model.Strongman;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -50,13 +51,13 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public ItemProcessor<Strongman, Strongman> processor() {
+    public ItemProcessor<Strongman, Rank> processor() {
         return new StrongmanItemProcessor();
     }
 
     @Bean
-    public ItemWriter<Strongman> writer(@Value("${module.outputResource}") String outputResource) {
-        FlatFileItemWriter<Strongman> writer = new FlatFileItemWriter<>();
+    public ItemWriter<Rank> writer(@Value("${module.outputResource}") String outputResource) {
+        FlatFileItemWriter<Rank> writer = new FlatFileItemWriter<>();
         writer.setResource(new FileSystemResource(outputResource));
         writer.setLineAggregator(new PassThroughLineAggregator<>());
         return writer;
@@ -70,9 +71,9 @@ public class BatchConfiguration {
 
     @Bean
     public Step step(StepBuilderFactory stepBuilderFactory, ItemReader<Strongman> reader,
-                     ItemWriter<Strongman> writer, ItemProcessor<Strongman, Strongman> processor) {
+                     ItemWriter<Rank> writer, ItemProcessor<Strongman, Rank> processor) {
         return stepBuilderFactory.get("step")
-                .<Strongman, Strongman>chunk(5)
+                .<Strongman, Rank>chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

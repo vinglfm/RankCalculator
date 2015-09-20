@@ -14,11 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BatchConfigurationTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private JobLauncherTestUtils jobLauncher;
+    private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Test
     public void runStrongmenJob() throws Exception {
-        JobExecution jobExecution = jobLauncher.launchJob();
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob();
 
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
     }
