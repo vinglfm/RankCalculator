@@ -1,6 +1,7 @@
 package com.ranks;
 
-import com.ranks.configuration.Config;
+import com.ranks.configuration.BatchConfiguration;
+import com.ranks.configuration.PropertyConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @EnableAutoConfiguration
-@Import(Config.class)
 public class Application {
 
     @RequestMapping("/calculate")

@@ -7,9 +7,11 @@ import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration(classes = Config.class)
-public class ConfigTest extends AbstractTestNGSpringContextTests {
-    @Value("${module.name}")String module;
+@ContextConfiguration(classes = PropertyConfiguration.class)
+public class PropertyConfigurationTest extends AbstractTestNGSpringContextTests {
+
+    @Value("${module.name}")
+    private String module;
 
     @Test
     public void moduleNameShouldBeConfigured() {
