@@ -1,4 +1,4 @@
-package com.ranks.configuration;
+package com.ranks.batch.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +22,10 @@ public class DBConfiguration {
     private Resource schemaDropScript;
 
     @Bean
-    public DataSource dataSource(@Value("${db.driver}") String driverClassName,
-                                 @Value("${db.url}") String url,
-                                 @Value("${db.user}") String user,
-                                 @Value("${db.password}") String password) {
+    public DataSource dataSource (@Value("${db.driver}") String driverClassName,
+                                  @Value("${db.url}") String url,
+                                  @Value("${db.user}") String user,
+                                  @Value("${db.password}") String password) {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
         driverManagerDataSource.setDriverClassName(driverClassName);
         driverManagerDataSource.setUrl(url);
@@ -34,19 +34,19 @@ public class DBConfiguration {
         driverManagerDataSource.setPassword(password);
 
         //TODO: drops job/step repositories
-//        DatabasePopulatorUtils.execute(databasePopulator(), driverManagerDataSource);
+        DatabasePopulatorUtils.execute(databasePopulator(), driverManagerDataSource);
 
         return driverManagerDataSource;
     }
 
     @Bean
     @Autowired
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+    public JdbcTemplate jdbcTemplate (DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
     @Bean
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
+    public DataSourceInitializer dataSourceInitializer (DataSource dataSource) {
         DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
         dataSourceInitializer.setDataSource(dataSource);
         dataSourceInitializer.setDatabasePopulator(databasePopulator());
@@ -54,7 +54,7 @@ public class DBConfiguration {
         return dataSourceInitializer;
     }
 
-    private ResourceDatabasePopulator databasePopulator() {
+    private ResourceDatabasePopulator databasePopulator () {
         ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
         resourceDatabasePopulator.addScript(schemaDropScript);
         return resourceDatabasePopulator;

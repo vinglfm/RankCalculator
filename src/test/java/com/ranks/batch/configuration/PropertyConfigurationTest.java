@@ -1,4 +1,4 @@
-package com.ranks.configuration;
+package com.ranks.batch.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,7 +14,7 @@ public class PropertyConfigurationTest extends AbstractTestNGSpringContextTests 
     private String module;
 
     @Test
-    public void moduleNameShouldBeConfigured() {
+    public void moduleNameShouldBeConfigured () {
         assertThat(module).isNotEmpty().isEqualTo("RankCalculator");
     }
 }

@@ -1,4 +1,4 @@
-package com.ranks.configuration;
+package com.ranks.batch.configuration;
 
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.context.annotation.Bean;

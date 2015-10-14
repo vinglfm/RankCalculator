@@ -1,4 +1,4 @@
-package com.ranks.configuration;
+package com.ranks.batch.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

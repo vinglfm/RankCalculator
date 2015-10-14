@@ -1,4 +1,4 @@
-package com.ranks.configuration;
+package com.ranks.batch.configuration;
 
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;

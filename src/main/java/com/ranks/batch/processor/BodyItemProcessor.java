@@ -1,0 +1,20 @@
+package com.ranks.batch.processor;
+
+import com.ranks.batch.calculator.RankCalculator;
+import com.ranks.common.model.Body;
+import com.ranks.common.model.Rank;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDate;
+
+public class BodyItemProcessor implements ItemProcessor<Body, Rank> {
+
+    @Autowired
+    private RankCalculator rankCalculator;
+
+    @Override
+    public Rank process (Body strongman) throws Exception {
+        return new Rank(strongman.getUserId(), LocalDate.now(), rankCalculator.calculate(strongman));
+    }
+}
