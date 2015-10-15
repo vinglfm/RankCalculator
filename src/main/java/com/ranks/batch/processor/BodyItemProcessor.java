@@ -15,6 +15,6 @@ public class BodyItemProcessor implements ItemProcessor<Body, Rank> {
 
     @Override
     public Rank process (Body strongman) throws Exception {
-        return new Rank(strongman.getUserId(), LocalDate.now(), rankCalculator.calculate(strongman));
+        return new Rank(strongman.getUserId(), strongman.getMeasurementDate(), rankCalculator.calculate(strongman));
     }
 }

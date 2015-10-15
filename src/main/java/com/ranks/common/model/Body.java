@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Builder
 public class Body {
     private final String userId;
+    private final LocalDate measurementDate;
     private final double neck;
     private final double chest;
     private final double waist;

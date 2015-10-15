@@ -9,6 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Rank {
     private final String userId;
-    private final LocalDate date;
+    private final LocalDate measurementDate;
     private final long rank;
 }

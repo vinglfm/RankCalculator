@@ -11,20 +11,20 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.ItemPreparedStatementSetter;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
-import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.io.FileSystemResource;
 
 import javax.sql.DataSource;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 @Configuration
 @EnableBatchProcessing
@@ -32,7 +32,8 @@ import javax.sql.DataSource;
 @ImportResource("classpath:dbConfig.xml")
 public class BatchConfiguration {
 
-    private static final String LATEST_BODY_INFO_QUERY = "SELECT bodyInfo.userId, bodyInfo.neck, bodyInfo.chest,\n" +
+    private static final String LATEST_BODY_INFO_QUERY = "SELECT bodyInfo.userId, bodyInfo.measurementDate,\n" +
+            " bodyInfo.neck, bodyInfo.chest,\n" +
             " bodyInfo.waist, bodyInfo.biceps,\n" +
             " bodyInfo.forearm, bodyInfo.wrist, bodyInfo.hip, bodyInfo.thigh, bodyInfo.gastrocnemius,\n" +
             " bodyInfo.ankle, bodyInfo.fatpercentage\n" +
@@ -48,6 +49,7 @@ public class BatchConfiguration {
         reader.setRowMapper((resultSet, rowNumb) -> {
             final Body body = Body.builder()
                     .userId(resultSet.getString("userId"))
+                    .measurementDate(resultSet.getDate("measurementDate").toLocalDate())
                     .neck(resultSet.getDouble("neck"))
                     .chest(resultSet.getDouble("chest"))
                     .waist(resultSet.getDouble("waist"))
@@ -72,18 +74,21 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public ItemWriter<Rank> writer (@Value("${module.outputResource}") String outputResource) {
-        FlatFileItemWriter<Rank> writer = new FlatFileItemWriter<>();
-        writer.setResource(new FileSystemResource(outputResource));
-        writer.setLineAggregator(new PassThroughLineAggregator<>());
-
-//        DelimitedLineAggregator<Rank> lineAggregator = new DelimitedLineAggregator<>();
-//        lineAggregator.setDelimiter(",");
-//        BeanWrapperFieldExtractor<Rank> fieldExtractor = new BeanWrapperFieldExtractor<>();
-//        fieldExtractor.setNames(new String[]{"userId", "date", "rank"});
-//        lineAggregator.setFieldExtractor(fieldExtractor);
-//        writer.setLineAggregator(lineAggregator);
-
+    @Autowired
+    public ItemWriter<Rank> writer (DataSource dataSource,
+                                    @Value("${module.outputResource}") String outputResource) {
+        JdbcBatchItemWriter<Rank> writer = new JdbcBatchItemWriter<>();
+        writer.setDataSource(dataSource);
+        writer.setSql("INSERT INTO BodyRank(userId, measurementDate, rank) VALUES(?, ?, ?);");
+//        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
+        writer.setItemPreparedStatementSetter(new ItemPreparedStatementSetter<Rank>() {
+            @Override
+            public void setValues (Rank item, PreparedStatement ps) throws SQLException {
+                ps.setString(1, item.getUserId());
+                ps.setDate(2, Date.valueOf(item.getMeasurementDate()));
+                ps.setLong(3, item.getRank());
+            }
+        });
         return writer;
     }
 
