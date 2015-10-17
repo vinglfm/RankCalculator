@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ContextConfiguration(classes = JobLauncherTestConfiguration.class)
-public class BatchConfigurationTest extends AbstractTestNGSpringContextTests {
+public class RankCalculationBatchConfigurationTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;

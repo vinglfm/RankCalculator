@@ -6,8 +6,6 @@ import com.ranks.common.model.Rank;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-
 public class BodyItemProcessor implements ItemProcessor<Body, Rank> {
 
     @Autowired
@@ -15,6 +13,7 @@ public class BodyItemProcessor implements ItemProcessor<Body, Rank> {
 
     @Override
     public Rank process (Body strongman) throws Exception {
-        return new Rank(strongman.getUserId(), strongman.getMeasurementDate(), rankCalculator.calculate(strongman));
+        return Rank.builder().userId(strongman.getUserId()).measurementDate(strongman.getMeasurementDate())
+                .rank(rankCalculator.calculate(strongman)).build();
     }
 }
