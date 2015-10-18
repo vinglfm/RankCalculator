@@ -16,9 +16,9 @@
     </bean>
 
     <!-- create job-meta tables automatically -->
-    <jdbc:initialize-database data-source="dataSource">
-        <jdbc:script location="org/springframework/batch/core/schema-drop-postgresql.sql" />
-        <jdbc:script location="org/springframework/batch/core/schema-postgresql.sql" />
-    </jdbc:initialize-database>
+    <!--<jdbc:initialize-database data-source="dataSource">-->
+        <!--<jdbc:script location="org/springframework/batch/core/schema-drop-postgresql.sql" />-->
+        <!--<jdbc:script location="org/springframework/batch/core/schema-postgresql.sql" />-->
+    <!--</jdbc:initialize-database>-->
 
 </beans>

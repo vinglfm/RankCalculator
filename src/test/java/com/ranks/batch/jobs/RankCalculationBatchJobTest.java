@@ -1,5 +1,6 @@
-package com.ranks.batch.configuration;
+package com.ranks.batch.jobs;
 
+import com.ranks.batch.helper.JobLauncherTestConfiguration;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
@@ -11,13 +12,13 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ContextConfiguration(classes = JobLauncherTestConfiguration.class)
-public class RankCalculationBatchConfigurationTest extends AbstractTestNGSpringContextTests {
+public class RankCalculationBatchJobTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Test
-    public void runStrongmenJob() throws Exception {
+    public void runStrongmenJob () throws Exception {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
     }

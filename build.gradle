@@ -24,6 +24,8 @@ dependencies {
     compile('org.apache.spark:spark-core_2.10:1.5.0') /*{
         exclude module: 'log4j-over-slf4j'
     }*/
+    compile('org.quartz-scheduler:quartz:2.2.1')
+    compile('org.springframework:spring-context-support:4.2.2.RELEASE')
     compile('org.apache.spark:spark-sql_2.10:1.5.0')
     testCompile group: 'org.testng', name: 'testng', version: '6.1.1'
     testCompile group: 'org.springframework', name: 'spring-test', version: '4.2.1.RELEASE'

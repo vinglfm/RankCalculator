@@ -1,18 +1,17 @@
-package com.ranks.batch.configuration;
+package com.ranks.batch.jobs;
 
+import com.ranks.batch.configuration.PropertyConfiguration;
 import com.ranks.batch.processor.BodyItemProcessor;
 import com.ranks.common.model.Body;
 import com.ranks.common.model.Rank;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +25,11 @@ import org.springframework.context.annotation.ImportResource;
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Configuration
-@EnableBatchProcessing
 @Import({PropertyConfiguration.class})
 @ImportResource("classpath:dbConfig.xml")
-public class RankCalculationBatchConfiguration {
+public class RankCalculationBatchJob {
 
     private static final String SELECT_LATEST_BODY_QUERY = "SELECT bodyInfo.userId, bodyInfo.measurementDate,\n" +
             " bodyInfo.neck, bodyInfo.chest,\n" +
@@ -87,15 +84,12 @@ public class RankCalculationBatchConfiguration {
         JdbcBatchItemWriter<Rank> writer = new JdbcBatchItemWriter<>();
         writer.setDataSource(dataSource);
         writer.setSql(INSERT_RANK_QUERY);
-//        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
-        writer.setItemPreparedStatementSetter(new ItemPreparedStatementSetter<Rank>() {
-            @Override
-            public void setValues (Rank item, PreparedStatement ps) throws SQLException {
-                ps.setString(1, item.getUserId());
-                ps.setDate(2, Date.valueOf(item.getMeasurementDate()));
-                ps.setLong(3, item.getRank());
-            }
-        });
+        writer.setItemPreparedStatementSetter((item, ps) -> {
+                    ps.setString(1, item.getUserId());
+                    ps.setDate(2, Date.valueOf(item.getMeasurementDate()));
+                    ps.setLong(3, item.getRank());
+                }
+        );
         return writer;
     }
 
@@ -151,7 +145,7 @@ public class RankCalculationBatchConfiguration {
                               @Qualifier("positionReader") ItemReader<Rank> reader,
                               @Qualifier("positionWriter") ItemWriter<Rank> writer,
                               @Value("${batch.chunkSize}") String chunkSize) {
-        return stepBuilderFactory.get("rankStep")
+        return stepBuilderFactory.get("positionStep")
                 .<Rank, Rank>chunk(Integer.parseInt(chunkSize))
                 .reader(reader)
                 .writer(writer)
